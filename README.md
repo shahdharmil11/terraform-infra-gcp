@@ -2,6 +2,7 @@
 
 ## Prerequisites
 
+<img src="https://github.com/shahdharmil11/terraform-infra-gcp/blob/master/gcp-infra.png"  title="Infra provisioned">
 Before we begin, we need to fulfill the following requirements:
 
 - Java Development Kit (JDK) 17
