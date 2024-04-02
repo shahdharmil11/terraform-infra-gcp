@@ -1,0 +1,24 @@
+logging:
+  receivers:
+    webapp-receiver:
+      type: files
+      include_paths:
+        - /var/log/csye6225/assignment.log
+      record_log_file_path: true
+  processors:
+    webapp-processor:
+      type: parse_json
+      time_key: time
+      time_format: "%Y-%m-%dT%H:%M:%S.%L%Z"
+    move_severity:
+      type: modify_fields
+      fields:
+        severity:
+          move_from: jsonPayload.level
+  service:
+    pipelines:
+      default_pipeline:
+        receivers: [webapp-receiver]
+        processors:
+          - webapp-processor
+          - move_severity

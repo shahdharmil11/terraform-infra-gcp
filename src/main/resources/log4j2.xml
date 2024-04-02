@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+
+        <File name="FixedFile" fileName="/var/log/webapp/application.log" append="true">
+            <JsonLayout properties="true" compact="true" eventEol="true">
+                <KeyValuePair key="severity" value="$${ctx:severity}"/>
+                <KeyValuePair key="httpMethod" value="${ctx:httpMethod}" />
+                <KeyValuePair key="path" value="${ctx:path}" />
+                <KeyValuePair key="RequestBody" value="$${ctx:RequestBody}" />
+                <KeyValuePair key="responseBody" value="$${ctx:responseBody}" />
+                <KeyValuePair key="logger" value="$${ctx:logger}" />
+                <KeyValuePair key="exception" value="$${ctx:exception}" />
+                <KeyValuePair key="timestamp" value="$${date:yyyy-MM-dd'T'HH:mm:ss.SSSX}" />
+            </JsonLayout>
+        </File>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p %d [%t] %c: %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+
+        <Root level="info">
+            <AppenderRef ref="FixedFile" />
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

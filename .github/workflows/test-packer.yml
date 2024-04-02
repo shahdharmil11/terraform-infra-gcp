@@ -1,0 +1,96 @@
+name: test-packer
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  job_id:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+  test:
+    needs: job_id
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: maven
+      - name: Setup PostgreSQL Server
+        uses: ikalnytskyi/action-setup-postgres@v4
+        with:
+          username: postgres
+          password: admin
+          database: cloud1
+          port: 5432
+        id: postgres
+      - name: Build with Maven
+        run: mvn compile
+
+      - name: Test with Maven
+        run: mvn test
+
+  validate:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init packer-info.pkr.hcl"
+
+      - name: Run `packer fmt`
+        id: fmt
+        run: "packer fmt -check packer-info.pkr.hcl"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Package with Maven
+        run: mvn package -Dmaven.test.skip
+
+      - name: Create test deployment folder
+        run: |
+          mkdir -p CloudAppRelease &&
+          cp ./target/assingment-0.0.1-SNAPSHOT.jar CloudAppRelease/assingment-0.0.1-SNAPSHOT.jar &&
+          cp ./start.sh CloudAppRelease/start.sh &&
+          cp ./webapp.service CloudAppRelease/webapp.service &&
+          cp ./env_vars.sh CloudAppRelease/env_vars.sh
+
+      - name: Create zip of test deployment folder
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r webapp.zip CloudAppRelease
+
+      - name: Validate Packer Image
+        run: packer validate packer-info.pkr.hcl
+
+      - name: Build Packer Image
+        run: packer build packer-info.pkr.hcl

@@ -1,0 +1,54 @@
+name: validation
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  job_id:
+    runs-on: ubuntu-latest
+    steps:
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          project_id: '${{ secrets.GCP_PROJECT_ID }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 'Get Credentials'
+        run: echo $GOOGLE_APPLICATION_CREDENTIALS
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+  validate:
+    needs: job_id
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+
+      - name: Create test deployment folder
+        run: |
+          mkdir -p CloudAppRelease
+
+      - name: Create zip of test deployment folder
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r webapp.zip CloudAppRelease
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init packer-info.pkr.hcl"
+
+      - name: Run `packer fmt`
+        id: fmt
+        run: "packer fmt -check packer-info.pkr.hcl"
+
+      - name: Validate Packer Image
+        run: packer validate packer-info.pkr.hcl
