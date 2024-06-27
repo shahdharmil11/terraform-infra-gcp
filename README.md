@@ -1,6 +1,6 @@
-#Infra setup for web application on GCP using IaC tool Terraform
+<h1>Infra setup for web application on GCP using IaC tool Terraform</h1>
 
-##Project name:
+<h2>Project name:</h2>
 GCP-Infrastructure
 
 GCP Service APIs enabled:
