@@ -1,24 +1,33 @@
-# webapp
+#Infra setup for web application on GCP using IaC tool Terraform
 
-## Prerequisites
+##Project name:
+GCP-Infrastructure
 
-<img src="https://github.com/shahdharmil11/terraform-infra-gcp/blob/master/gcp-infra.png"  title="Infra provisioned">
-Before we begin, we need to fulfill the following requirements:
+GCP Service APIs enabled:
+Compute Engine API
+Cloud Monitoring API
+Cloud Logging API
+Cloud DNS API
+Service Networking API
+Cloud Build API
+Cloud Functions API
+Cloud Pub/Sub API
+Eventarc API
+Cloud Run Admin API
 
-- Java Development Kit (JDK) 17
-- Maven --> pom.xml with relevant dependancies
-- PostgreSQL Database --> credentials that are stored
+CLI setup:
+gcloud auth login
+gcloud auth application-default login
+gcloud config set project csye6225-eashan-roy
 
-## Build Instructions
+Terraform commands:
+terraform init
+terraform fmt terraform validate
+terraform plan
+terraform apply
+terraform destroy
 
-To build the application, follow these steps:
+Infra provisioned independent of Terraform DNS zone (Note: A, SPF, DKIM, MX records are created via tf, only the zone is manually setup)
 
-Open terminal:
-  1. Clone the repository on relevant path: git clone https://github.com/your-username/your-repository.git
-  2. Open the project, check the github actions workflow and branch rules
-  3. Make sure port 5432 is available for DB connection
-  4. Make sure port 8080 is available for tomcat connection
-  5. Complete MAven lifecycle to resolve dependency issues
-  6. Start the application
-  7. Open PostMan and create few instances first
-  8. Then execute all of the required apis
+GitHub Actions workflow
+CI workflow to format and validate terraform code before PR can be merged to organization repo's main branch
