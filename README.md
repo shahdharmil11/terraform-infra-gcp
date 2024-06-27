@@ -1,33 +1,36 @@
-<h1>Infra setup for web application on GCP using IaC tool Terraform</h1>
+# terraform-infra-gcp
+Infra setup for web application on GCP using IaC tool Terraform
 
-<h2>Project name:</h2>
+- Project name:  
 GCP-Infrastructure
+  
+- GCP Service APIs enabled:  
+Compute Engine API  
+Cloud Monitoring API  
+Cloud Logging API  
+Cloud DNS API  
+Service Networking API  
+Cloud Build API  
+Cloud Functions API  
+Cloud Pub/Sub API  
+Eventarc API  
+Cloud Run Admin API  
 
-GCP Service APIs enabled:
-Compute Engine API
-Cloud Monitoring API
-Cloud Logging API
-Cloud DNS API
-Service Networking API
-Cloud Build API
-Cloud Functions API
-Cloud Pub/Sub API
-Eventarc API
-Cloud Run Admin API
+- CLI setup:  
+gcloud auth login   
+gcloud auth application-default login  
+gcloud config set project csye6225-webapp-cloud  
 
-CLI setup:
-gcloud auth login
-gcloud auth application-default login
-gcloud config set project csye6225-eashan-roy
+- Terraform commands:  
+terraform init  
+terraform fmt
+terraform validate  
+terraform plan  
+terraform apply  
+terraform destroy  
 
-Terraform commands:
-terraform init
-terraform fmt terraform validate
-terraform plan
-terraform apply
-terraform destroy
+- Infra provisioned independent of Terraform
+DNS zone (Note: A, SPF, DKIM, MX records are created via tf, only the zone is manually setup)
 
-Infra provisioned independent of Terraform DNS zone (Note: A, SPF, DKIM, MX records are created via tf, only the zone is manually setup)
-
-GitHub Actions workflow
+- GitHub Actions workflow  
 CI workflow to format and validate terraform code before PR can be merged to organization repo's main branch
