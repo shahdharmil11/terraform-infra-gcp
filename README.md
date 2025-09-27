@@ -1,7 +1,7 @@
 # terraform-infra-gcp
 Infra setup for web application on GCP using IaC tool Terraform
 
-<img src="https://github.com/shahdharmil11/terraform-infra-gcp/blob/master/gcp-infra.jpeg"  title="Infra provisioned">
+<img src="https://github.com/shahdharmil11/terraform-infra-gcp/blob/master/gcp-infra.jpg"  title="Infra provisioned">
 
 - Project name:  
 GCP-Infrastructure
